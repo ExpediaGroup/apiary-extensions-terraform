@@ -4,7 +4,7 @@ Terraform deployment scripts for Apiary Extensions [Apiary Extensions](https://g
 
 ## Modules:
 
-* [Privilege Grantor](https://github.com/ExpediaGroup/apiary-extensions-terraform/)
+* [Privileges Grantor](https://github.com/ExpediaGroup/apiary-extensions-terraform/tree/master/privileges-grantor)
 
 For more information about Apiary, please refer to the main [Apiary](https://github.com/ExpediaInc/apiary) project page.
 
