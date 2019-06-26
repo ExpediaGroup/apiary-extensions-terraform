@@ -51,6 +51,11 @@ variable "metastore_events_filter" {
   default     = "\"CREATE_TABLE\",\"ALTER_TABLE\""
 }
 
+variable "database_filter" {
+  description = "List of database names to be added to SNS filter. Supported format: `<<EOD \"DB_NAME_1\",\"DB_NAME_2\" EOD`"
+  type        = "string"
+}
+
 # Tags
 variable "tags" {
   description = "A map of tags to apply to resources."
