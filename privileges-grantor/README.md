@@ -28,13 +28,14 @@ Example module invocation:
 ```
 module "apiary-privileges-grantor" {
   source = "git@github.com:ExpediaGroup/apiary-extensions-terraform.git/privileges-grantor"
-  pg_lambda_bucket  = "pg-s3-bucket"
-  pg_jars_s3_key    = "pg-s3-key"
-  pg_lambda_version = "4.1.0"
-  pg_metastore_uri  = "thrift://ip-address:9083"
+  pg_lambda_bucket           = "pg-s3-bucket"
+  pg_jars_s3_key             = "pg-s3-key"
+  pg_lambda_version          = "4.1.0"
+  pg_metastore_uri           = "thrift://ip-address:9083"
   metastore_events_sns_topic = "arn:aws:sns:us-west-2:1234567:metastore-events-sns-topic"
-  subnets           = ["subnet-1", "subnet-2"]
-  security_groups   = ["security-group-1", "security-group-2"]
+  database_filter            = "\"db_1\",\"db_2\""
+  subnets                    = ["subnet-1", "subnet-2"]
+  security_groups            = ["security-group-1", "security-group-2"]
   tags = {
     Name = "Apiary-Privileges-Grantor"
     Team = "Operations"
