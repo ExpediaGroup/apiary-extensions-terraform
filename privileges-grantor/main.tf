@@ -80,7 +80,8 @@ resource "aws_sns_topic_subscription" "sqs_hive_metastore_sns_subscription" {
 
   filter_policy = <<EOF
 {
-   "eventType": [${var.metastore_events_filter}]
+   "eventType": [${upper(var.metastore_events_filter)}],
+   "dbName": [${lower(var.database_filter)}]
 }
 EOF
 }

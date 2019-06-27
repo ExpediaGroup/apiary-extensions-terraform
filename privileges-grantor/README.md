@@ -12,6 +12,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 | lambda\_timeout | The time after which the lambda execution stops. | string | `"200"` | no |
 | memory | The amount of memory (in MiB) to be used by Lambda | string | `"512"` | no |
 | metastore\_events\_filter | List of metastore event types to be added to SNS filter. Supported format: `<<EOD "CREATE_TABLE","ALTER_TABLE" EOD` | string | `"\"CREATE_TABLE\",\"ALTER_TABLE\""` | no |
+| database\_filter | List of database names to be added to SNS filter. Supported format: `<<EOD \"DB_NAME_1\",\"DB_NAME_2\" EOD` | string | n/a | yes |
 | metastore\_events\_sns\_topic | SNS Topic for Hive Metastore events. | string | n/a | yes |
 | pg\_jars\_s3\_key | S3 key where zip file is located. | string | n/a | yes |
 | pg\_lambda\_bucket | Bucket where the Lambda zip can be found, for example 'bucket_name'. Used together with `pg_jars_s3_key`. | string | n/a | yes |
