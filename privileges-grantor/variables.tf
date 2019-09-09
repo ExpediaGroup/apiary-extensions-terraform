@@ -21,17 +21,12 @@ variable "security_groups" {
 }
 
 variable "pg_lambda_bucket" {
-  description = "Bucket where the Lambda zip can be found, for example 'bucket_name'. Used together with `pg_jars_s3_key`."
+  description = "Bucket where the Lambda zip can be found, for example 'bucket_name'. Used together with `pg_lambda_s3_key`."
   type        = "string"
 }
 
-variable "pg_jars_s3_key" {
+variable "pg_lambda_s3_key" {
   description = "S3 key where zip file is located."
-  type        = "string"
-}
-
-variable "pg_lambda_version" {
-  description = "Version of the Privilege Grantor Lambda."
   type        = "string"
 }
 
@@ -47,13 +42,13 @@ variable "metastore_events_sns_topic" {
 
 variable "metastore_events_filter" {
   description = "List of metastore event types to be added to SNS filter. Supported format: `<<EOD \"CREATE_TABLE\",\"ALTER_TABLE\" EOD`"
-  type        = "string"
-  default     = "\"CREATE_TABLE\",\"ALTER_TABLE\""
+  type        = "list"
+  default     = [ "CREATE_TABLE","ALTER_TABLE" ]
 }
 
 variable "database_filter" {
   description = "List of database names to be added to SNS filter. Supported format: `<<EOD \"DB_NAME_1\",\"DB_NAME_2\" EOD`"
-  type        = "string"
+  type        = "list"
 }
 
 # Tags

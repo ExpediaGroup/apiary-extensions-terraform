@@ -53,6 +53,31 @@ resource "aws_sqs_queue" "privilege_grantor_sqs_queue" {
   visibility_timeout_seconds = "${var.lambda_timeout}"
 }
 
+resource "aws_sqs_queue_policy" "privilege_grantor_sqs_queue_policy" {
+  queue_url = "${aws_sqs_queue.privilege_grantor_sqs_queue.id}"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Id": "AllowSNSSendMessage",
+  "Statement": [
+    {
+      "Sid": "Allow Apiary Metadata Events",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "sqs:SendMessage",
+      "Resource": "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "${var.metastore_events_sns_topic}"
+        }
+      }
+    }
+  ]
+}
+POLICY
+}
+
 resource "aws_iam_role_policy" "sqs_for_privilege_grantor" {
   name = "${local.instance_alias}-sqs-policy"
   role = "${aws_iam_role.iam_for_privilege_grantor.id}"
@@ -73,22 +98,29 @@ resource "aws_iam_role_policy" "sqs_for_privilege_grantor" {
 EOF
 }
 
+data "template_file" "filter_policy" {
+  template = <<JSON
+$${val}
+JSON
+    vars {
+        val = "${jsonencode(map(
+                    "eventType", "${compact(split(",",upper(join(",",var.metastore_events_filter))))}",
+                    "dbName", "${compact(split(",",lower(join(",",var.database_filter))))}"
+                ))}"
+      }
+}
+
 resource "aws_sns_topic_subscription" "sqs_hive_metastore_sns_subscription" {
   topic_arn = "${var.metastore_events_sns_topic}"
   protocol  = "sqs"
   endpoint  = "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}"
 
-  filter_policy = <<EOF
-{
-   "eventType": [${upper(var.metastore_events_filter)}],
-   "dbName": [${lower(var.database_filter)}]
-}
-EOF
+  filter_policy = "${data.template_file.filter_policy.rendered}"
 }
 
 resource "aws_lambda_function" "privilege_grantor_fn" {
   s3_bucket     = "${var.pg_lambda_bucket}"
-  s3_key        = "${var.pg_jars_s3_key}/apiary-privileges-grantor-lambda-${var.pg_lambda_version}.zip"
+  s3_key        = "${var.pg_lambda_s3_key}"
   function_name = "${local.instance_alias}-fn"
   role          = "${aws_iam_role.iam_for_privilege_grantor.arn}"
   handler       = "com.expediagroup.apiary.extensions.events.metastore.consumer.privilegesgrantor.lambda.PrivilegesGrantorLambda::handleRequest"
@@ -107,6 +139,8 @@ resource "aws_lambda_function" "privilege_grantor_fn" {
     subnet_ids         = ["${var.subnets}"]
     security_group_ids = ["${var.security_groups}"]
   }
+
+  tags = "${var.tags}"
 }
 
 resource "aws_lambda_event_source_mapping" "sqs_lambda_mapping" {
