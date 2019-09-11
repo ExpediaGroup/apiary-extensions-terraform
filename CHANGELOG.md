@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - TBD
+### Added
+- add SQS permissions policy
+- adding tags to the lambda
+
+### Changed
+- converting the filter\_policy to a template
+- updating filter vars from string to list
+- updating the variable lambda\_s3\_key usage
+
 ## [1.0.0] - TBD
 ### Added
 - Terraform scripts for Privilege Grantor Apiary Extension.
