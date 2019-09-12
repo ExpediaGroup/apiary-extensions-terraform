@@ -72,7 +72,6 @@ resource "aws_s3_bucket_object" "apiary-privileges-grantor-jar" {
   bucket = "${data.aws_s3_bucket.apiary_extensions.id}"
   key    = "apiary-privileges-grantor-lambda-${var.pg_lambda_version}.zip"
   source = "apiary-privileges-grantor-core-${var.pg_lambda_version}.zip"
-
 }
 
 module "apiary-privileges-grantor" {
