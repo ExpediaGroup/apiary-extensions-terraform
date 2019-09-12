@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [1.1.0] - TBD
 ### Added
 - SQS permissions policy.
-- adding tags to the lambda
+- tags to the lambda.
 
 ### Changed
 - converting the filter_policy to a template.
