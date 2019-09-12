@@ -43,7 +43,7 @@ module "apiary-privileges-grantor" {
 ```
 
 The apiary-privileges-grantor lambda can be found in the public [maven repository](https://mvnrepository.com/artifact/com.expediagroup.apiary/apiary-privileges-grantor-lambda).
-If you want you can download the jar from these repositories and upload it to S3 via terraform as well.
+The jars can be downloaded from the link provided above and uploaded to S3 via terraform as follows:
 
 ```
 variable "pg_lambda_version" {
