@@ -15,7 +15,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 | database\_filter | List of database names to be added to SNS filter. Supported format: `[ "DB_NAME_1", "DB_NAME_2" ]` | list | n/a | yes |
 | metastore\_events\_sns\_topic | SNS Topic for Hive Metastore events. | string | n/a | yes |
 | pg\_lambda\_s3\_key | S3 key where privilege grantor lambda zip file is located. | string | n/a | yes |
-| pg\_lambda\_bucket | Bucket where the privilege grantor lambda zip can be found, for example 'bucket\_name'. Used together with `pg_lambda_s3_key` to construct the full S3 path  | string | n/a | yes |
+| pg\_lambda\_bucket | Bucket where the privilege grantor lambda zip can be found, for example 'bucket\_name'. Used together with `pg_lambda_s3_key` to construct the full S3 path. | string | n/a | yes |
 | pg\_metastore\_uri | Thrift URI of the metastore to which Lambda will connect to. | string | n/a | yes |
 | security\_groups | Security groups in which Lambda will have access to. | list | n/a | yes |
 | subnets | Subnets in which Lambda will have access to. | list | n/a | yes |

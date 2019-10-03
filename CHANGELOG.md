@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - TBD
+## [2.0.0] - TBD
 ### Added
 - SQS permissions policy.
 - tags to the lambda.
@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - converting the filter_policy to a template.
 - updating filter vars from string to list.
 - updating the variable `pg_jars_s3_key` to `pg_lambda_s3_key`.
+
+### Removed
+- removed the `pg_lambda_version` module variable (but left an example of using it client-side in the README.md)
 
 ## [1.0.0] - 2019-06-27
 ### Added
