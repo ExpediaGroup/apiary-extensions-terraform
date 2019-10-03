@@ -13,6 +13,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - updating filter vars from string to list.
 - updating the variable `pg_jars_s3_key` to `pg_lambda_s3_key`.
 
-## [1.0.0] - TBD
+## [1.0.0] - 2019-06-27
 ### Added
 - Terraform scripts for Privilege Grantor Apiary Extension.
