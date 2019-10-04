@@ -14,8 +14,8 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 | metastore\_events\_filter | List of metastore event types to be added to SNS filter. Supported format: `[ "CREATE_TABLE","ALTER_TABLE" ]` | list | `[ "CREATE_TABLE", "ALTER_TABLE" ]` | no |
 | database\_filter | List of database names to be added to SNS filter. Supported format: `[ "DB_NAME_1", "DB_NAME_2" ]` | list | n/a | yes |
 | metastore\_events\_sns\_topic | SNS Topic for Hive Metastore events. | string | n/a | yes |
-| pg\_lambda\_s3\_key | S3 key where privilege grantor lambda zip file is located. | string | n/a | yes |
-| pg\_lambda\_bucket | Bucket where the privilege grantor lambda zip can be found, for example 'bucket\_name'. Used together with `pg_lambda_s3_key` to construct the full S3 path. | string | n/a | yes |
+| pg\_lambda\_s3\_key | S3 key where privilege grantor lambda jar/zip file is located. | string | n/a | yes |
+| pg\_lambda\_bucket | Bucket where the privilege grantor lambda jar/zip can be found, for example 'bucket\_name'. Used together with `pg_lambda_s3_key` to construct the full S3 path. | string | n/a | yes |
 | pg\_metastore\_uri | Thrift URI of the metastore to which Lambda will connect to. | string | n/a | yes |
 | security\_groups | Security groups in which Lambda will have access to. | list | n/a | yes |
 | subnets | Subnets in which Lambda will have access to. | list | n/a | yes |
@@ -61,7 +61,7 @@ resource "null_resource" "apiary-privileges-grantor-jar" {
 
   provisioner "local-exec" {
     command = <<CMD
-        curl -sLo apiary-privileges-grantor-core-${var.pg_lambda_version}.jar https://repo1.maven.org/maven2/com/expediagroup/apiary/apiary-privileges-grantor-core/${var.pg_lambda_version}/apiary-privileges-grantor-core-${var.pg_lambda_version}.jar && zip apiary-privileges-grantor-core-${var.pg_lambda_version}.zip apiary-privileges-grantor-core-${var.pg_lambda_version}.jar
+        curl -sLo apiary-privileges-grantor-core-${var.pg_lambda_version}.jar https://repo1.maven.org/maven2/com/expediagroup/apiary/apiary-privileges-grantor-core/${var.pg_lambda_version}/apiary-privileges-grantor-core-${var.pg_lambda_version}.jar
 CMD
   }
 }
@@ -70,8 +70,8 @@ resource "aws_s3_bucket_object" "apiary-privileges-grantor-jar" {
   depends_on = ["null_resource.apiary-privileges-grantor-jar"]
 
   bucket = "${data.aws_s3_bucket.apiary_extensions.id}"
-  key    = "apiary-privileges-grantor-lambda-${var.pg_lambda_version}.zip"
-  source = "apiary-privileges-grantor-core-${var.pg_lambda_version}.zip"
+  key    = "apiary-privileges-grantor-lambda-${var.pg_lambda_version}.jar"
+  source = "apiary-privileges-grantor-core-${var.pg_lambda_version}.jar"
 }
 
 module "apiary-privileges-grantor" {
