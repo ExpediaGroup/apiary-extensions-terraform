@@ -104,8 +104,7 @@ $${val}
 JSON
     vars {
         val = "${jsonencode(map(
-                    "eventType", "${compact(split(",",upper(join(",",var.metastore_events_filter))))}",
-                    "dbName", "${compact(split(",",lower(join(",",var.database_filter))))}"
+                    "eventType", "${compact(split(",",upper(join(",",var.metastore_events_filter))))}"
                 ))}"
       }
 }

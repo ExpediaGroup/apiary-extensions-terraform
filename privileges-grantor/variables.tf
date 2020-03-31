@@ -41,14 +41,9 @@ variable "metastore_events_sns_topic" {
 }
 
 variable "metastore_events_filter" {
-  description = "List of metastore event types to be added to SNS filter. Supported format: `<<EOD \"CREATE_TABLE\",\"ALTER_TABLE\" EOD`"
+  description = "List of metastore event types to be added to SNS filter."
   type        = "list"
   default     = [ "CREATE_TABLE","ALTER_TABLE" ]
-}
-
-variable "database_filter" {
-  description = "List of database names to be added to SNS filter. Supported format: `<<EOD \"DB_NAME_1\",\"DB_NAME_2\" EOD`"
-  type        = "list"
 }
 
 # Tags
