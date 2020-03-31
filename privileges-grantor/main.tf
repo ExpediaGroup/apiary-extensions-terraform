@@ -98,24 +98,12 @@ resource "aws_iam_role_policy" "sqs_for_privilege_grantor" {
 EOF
 }
 
-data "template_file" "filter_policy" {
-  template = <<JSON
-$${val}
-JSON
-    vars {
-        val = "${jsonencode(map(
-                    "eventType", "${compact(split(",",upper(join(",",var.metastore_events_filter))))}",
-                    "dbName", "${compact(split(",",lower(join(",",var.database_filter))))}"
-                ))}"
-      }
-}
-
 resource "aws_sns_topic_subscription" "sqs_hive_metastore_sns_subscription" {
   topic_arn = "${var.metastore_events_sns_topic}"
   protocol  = "sqs"
   endpoint  = "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}"
 
-  filter_policy = "${data.template_file.filter_policy.rendered}"
+  filter_policy = "${var.metastore_events_sns_filter}"
 }
 
 resource "aws_lambda_function" "privilege_grantor_fn" {
