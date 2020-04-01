@@ -111,8 +111,8 @@ JSON
 
 resource "aws_sns_topic_subscription" "sqs_hive_metastore_sns_subscription" {
   topic_arn = "${var.metastore_events_sns_topic}"
-  protocol  = "lambda"
-  endpoint  = "${aws_lambda_function.privilege_grantor_fn.arn}"
+  protocol  = "sqs"
+  endpoint  = "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}"
 
   filter_policy = "${data.template_file.filter_policy.rendered}"
 }
