@@ -48,55 +48,55 @@ resource "aws_iam_role_policy_attachment" "privilege_grantor_role_policy_attach"
   policy_arn = "${aws_iam_policy.privilege_grantor_lambda_vpc_access.arn}"
 }
 
-#resource "aws_sqs_queue" "privilege_grantor_sqs_queue" {
-#  name                       = "${local.instance_alias}-sqs-queue"
-#  visibility_timeout_seconds = "${var.lambda_timeout}"
-#}
-#
-#resource "aws_sqs_queue_policy" "privilege_grantor_sqs_queue_policy" {
-#  queue_url = "${aws_sqs_queue.privilege_grantor_sqs_queue.id}"
-#
-#  policy = <<POLICY
-#{
-#  "Version": "2012-10-17",
-#  "Id": "AllowSNSSendMessage",
-#  "Statement": [
-#    {
-#      "Sid": "Allow Apiary Metadata Events",
-#      "Effect": "Allow",
-#      "Principal": "*",
-#      "Action": "sqs:SendMessage",
-#      "Resource": "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}",
-#      "Condition": {
-#        "ArnEquals": {
-#          "aws:SourceArn": "${var.metastore_events_sns_topic}"
-#        }
-#      }
-#    }
-#  ]
-#}
-#POLICY
-#}
+resource "aws_sqs_queue" "privilege_grantor_sqs_queue" {
+  name                       = "${local.instance_alias}-sqs-queue"
+  visibility_timeout_seconds = "${var.lambda_timeout}"
+}
 
-#resource "aws_iam_role_policy" "sqs_for_privilege_grantor" {
-#  name = "${local.instance_alias}-sqs-policy"
-#  role = "${aws_iam_role.iam_for_privilege_grantor.id}"
-#
-#  policy = <<EOF
-#{
-#    "Version": "2012-10-17",
-#    "Statement": {
-#        "Effect": "Allow",
-#        "Action": [
-#          "sqs:ReceiveMessage",
-#          "sqs:DeleteMessage",
-#          "sqs:GetQueueAttributes"
-#        ],
-#        "Resource": "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}"
-#    }
-#}
-#EOF
-#}
+resource "aws_sqs_queue_policy" "privilege_grantor_sqs_queue_policy" {
+  queue_url = "${aws_sqs_queue.privilege_grantor_sqs_queue.id}"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Id": "AllowSNSSendMessage",
+  "Statement": [
+    {
+      "Sid": "Allow Apiary Metadata Events",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "sqs:SendMessage",
+      "Resource": "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "${var.metastore_events_sns_topic}"
+        }
+      }
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy" "sqs_for_privilege_grantor" {
+  name = "${local.instance_alias}-sqs-policy"
+  role = "${aws_iam_role.iam_for_privilege_grantor.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": [
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes"
+        ],
+        "Resource": "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}"
+    }
+}
+EOF
+}
 
 data "template_file" "filter_policy" {
   template = <<JSON
@@ -142,9 +142,9 @@ resource "aws_lambda_function" "privilege_grantor_fn" {
   tags = "${var.tags}"
 }
 
-#resource "aws_lambda_event_source_mapping" "sqs_lambda_mapping" {
-#  batch_size       = 1
-#  event_source_arn = "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}"
-#  function_name    = "${aws_lambda_function.privilege_grantor_fn.arn}"
-#  enabled          = true
-#}
+resource "aws_lambda_event_source_mapping" "sqs_lambda_mapping" {
+  batch_size       = 1
+  event_source_arn = "${aws_sqs_queue.privilege_grantor_sqs_queue.arn}"
+  function_name    = "${aws_lambda_function.privilege_grantor_fn.arn}"
+  enabled          = true
+}
