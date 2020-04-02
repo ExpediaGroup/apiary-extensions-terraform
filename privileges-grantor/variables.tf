@@ -41,8 +41,8 @@ variable "metastore_events_sns_topic" {
 }
 
 variable "metastore_events_sns_filter" {
-  description = "SNS filter policy"
   description = <<EOF
+  SNS filter policy
   The Metastore events message attributes enable filtering of the SNS events. 
   This can be done by applying a filter policy in a subscription receiver. 
   The following messages attributes are supported:
