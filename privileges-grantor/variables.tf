@@ -40,15 +40,33 @@ variable "metastore_events_sns_topic" {
   type        = "string"
 }
 
-variable "metastore_events_filter" {
-  description = "List of metastore event types to be added to SNS filter. Supported format: `<<EOD \"CREATE_TABLE\",\"ALTER_TABLE\" EOD`"
-  type        = "list"
-  default     = [ "CREATE_TABLE","ALTER_TABLE" ]
-}
+variable "metastore_events_sns_filter" {
+  description = <<EOF
+  SNS filter policy
+  The Metastore events message attributes enable filtering of the SNS events. 
+  This can be done by applying a filter policy in a subscription receiver. 
+  The following messages attributes are supported:
 
-variable "database_filter" {
-  description = "List of database names to be added to SNS filter. Supported format: `<<EOD \"DB_NAME_1\",\"DB_NAME_2\" EOD`"
-  type        = "list"
+  -----------------------------------------------------------------------------------
+  | Field Name          | Type   | Description
+  -----------------------------------------------------------------------------------
+  | eventType           | String | One of: CREATE_TABLE, DROP_TABLE, ALTER_TABLE, ADD_PARTITION, DROP_PARTITION, ALTER_PARTITION
+  | dbName              | String | Database name of the Hive table from which the event is emitted.
+  | tableName           | String | Name of the Hive table from which the event is emitted.
+  | qualifiedTableName  | String | Combined version of dbName and tableName: my_db.my_table.
+  -----------------------------------------------------------------------------------
+
+  Refer to https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html for more information on how to construct a filter.
+EOF
+  type        = "string"
+  default     = <<JSON
+{
+  "eventType": [ 
+ 	"CREATE_TABLE", 
+	"ALTER_TABLE" 
+  ]
+}
+JSON
 }
 
 # Tags

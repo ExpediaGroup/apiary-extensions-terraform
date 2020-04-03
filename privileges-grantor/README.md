@@ -11,8 +11,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 | instance\_name | Privileges Grantor instance name to identify resources in multi-instance deployments. | string | `""` | no |
 | lambda\_timeout | The time after which the lambda execution stops. | string | `"200"` | no |
 | memory | The amount of memory (in MiB) to be used by Lambda | string | `"512"` | no |
-| metastore\_events\_filter | List of metastore event types to be added to SNS filter. Supported format: `[ "CREATE_TABLE","ALTER_TABLE" ]` | list | `[ "CREATE_TABLE", "ALTER_TABLE" ]` | no |
-| database\_filter | List of database names to be added to SNS filter. Supported format: `[ "DB_NAME_1", "DB_NAME_2" ]` | list | n/a | yes |
+| metastore\_events\_sns\_filter | SNS filter of message attributes to the added to the SNS topic subscription. Supported format: SNS filter format. Refer to https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html for more information on how to construct a filter. | string | `{ "eventType": [ "CREATE_TABLE", "ALTER_TABLE" ] }` | no |
 | metastore\_events\_sns\_topic | SNS Topic for Hive Metastore events. | string | n/a | yes |
 | pg\_lambda\_s3\_key | S3 key where privilege grantor lambda jar/zip file is located. | string | n/a | yes |
 | pg\_lambda\_bucket | Bucket where the privilege grantor lambda jar/zip can be found, for example 'bucket\_name'. Used together with `pg_lambda_s3_key` to construct the full S3 path. | string | n/a | yes |
@@ -31,7 +30,19 @@ module "apiary-privileges-grantor" {
   pg_lambda_s3_key           = "pg-s3-key"
   pg_metastore_uri           = "thrift://ip-address:9083"
   metastore_events_sns_topic = "arn:aws:sns:us-west-2:1234567:metastore-events-sns-topic"
-  database_filter            = [ "db_1", "db_2" ]
+  metastore_events_sns_filter = <<JSON
+{
+  "dbName": [
+    {"prefix": "db1_"},
+    {"prefix": "db2_"},
+    "default"
+  ],
+  "eventType": [
+    "CREATE_TABLE",
+    "ALTER_TABLE"
+  ]
+}
+JSON
   subnets                    = ["subnet-1", "subnet-2"]
   security_groups            = ["security-group-1", "security-group-2"]
   tags = {
@@ -49,38 +60,53 @@ The jars can be downloaded from the link provided above and uploaded to S3 via t
 variable "pg_lambda_version" {
   description = "Version of the Privilege Grantor Lambda."
   type        = "string"
-  default     = "4.2.0"
+  default     = "6.1.0"
 }
 
 data "aws_s3_bucket" "apiary-extensions" {
   bucket = "pg-s3-bucket"
 }
 
-resource "null_resource" "apiary-privileges-grantor-jar" {
+resource "null_resource" "apiary-privileges-grantor-zip" {
   depends_on = ["data.aws_s3_bucket.apiary_extensions"]
+
+  triggers = {
+    lambda_version = "${var.pg_lambda_version}"
+  }
 
   provisioner "local-exec" {
     command = <<CMD
-        curl -sLo apiary-privileges-grantor-core-${var.pg_lambda_version}.jar https://repo1.maven.org/maven2/com/expediagroup/apiary/apiary-privileges-grantor-core/${var.pg_lambda_version}/apiary-privileges-grantor-core-${var.pg_lambda_version}.jar
+        curl -sLo apiary-privileges-grantor-lambda-${var.pg_lambda_version}.zip https://repo1.maven.org/maven2/com/expediagroup/apiary/apiary-privileges-grantor-lambda/${var.pg_lambda_version}/apiary-privileges-grantor-lambda-${var.pg_lambda_version}.zip
 CMD
   }
 }
 
-resource "aws_s3_bucket_object" "apiary-privileges-grantor-jar" {
-  depends_on = ["null_resource.apiary-privileges-grantor-jar"]
+resource "aws_s3_bucket_object" "apiary-privileges-grantor-zip" {
+  depends_on = ["null_resource.apiary-privileges-grantor-zip"]
 
   bucket = "${data.aws_s3_bucket.apiary_extensions.id}"
-  key    = "apiary-privileges-grantor-lambda-${var.pg_lambda_version}.jar"
-  source = "apiary-privileges-grantor-core-${var.pg_lambda_version}.jar"
+  key    = "apiary-privileges-grantor-lambda-${var.pg_lambda_version}.zip"
+  source = "apiary-privileges-grantor-core-${var.pg_lambda_version}.zip"
 }
 
 module "apiary-privileges-grantor" {
   source = "git@github.com:ExpediaGroup/apiary-extensions-terraform.git/privileges-grantor"
   pg_lambda_bucket           = "${data.aws_s3_bucket.apiary-extensions.id}"
-  pg_lambda_s3_key           = "${aws_s3_bucket_object.apiary-privileges-grantor-jar.id}"
+  pg_lambda_s3_key           = "${aws_s3_bucket_object.apiary-privileges-grantor-zip.id}"
   pg_metastore_uri           = "thrift://ip-address:9083"
   metastore_events_sns_topic = "arn:aws:sns:us-west-2:1234567:metastore-events-sns-topic"
-  database_filter            = [ "db_1", "db_2" ]
+  metastore_events_sns_filter = <<JSON
+{
+  "dbName": [
+    {"prefix": "db1_"},
+    {"prefix": "db2_"},
+    "default"
+  ],
+  "eventType": [
+    "CREATE_TABLE",
+    "ALTER_TABLE"
+  ]
+}
   subnets                    = ["subnet-1", "subnet-2"]
   security_groups            = ["security-group-1", "security-group-2"]
   tags = {
