@@ -60,7 +60,7 @@ The jars can be downloaded from the link provided above and uploaded to S3 via t
 variable "pg_lambda_version" {
   description = "Version of the Privilege Grantor Lambda."
   type        = "string"
-  default     = "6.1.0"
+  default     = "6.0.1"
 }
 
 data "aws_s3_bucket" "apiary-extensions" {
