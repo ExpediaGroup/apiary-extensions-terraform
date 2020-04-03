@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Removed
 - `database_filter` and `metastore_events_filter` variables.
 ### Changed
-- bumped up lambda version to 6.1.0.
+- Updated `pg_lambda_version` to `6.1.0` (was `4.2.0`).
 
 ## [2.0.0] - 2019-10-04
 ### Added
