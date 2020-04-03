@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 - `metastore_events_sns_filter` map variable that accepts a valid SNS filter.
 ### Removed
-- `database_filter` and `metastore_events_filter` variables
+- `database_filter` and `metastore_events_filter` variables.
 
 ## [2.0.0] - 2019-10-04
 ### Added
