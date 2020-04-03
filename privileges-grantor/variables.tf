@@ -56,7 +56,7 @@ variable "metastore_events_sns_filter" {
   | qualifiedTableName  | String | Combined version of dbName and tableName: my_db.my_table.
   -----------------------------------------------------------------------------------
 
-  Check https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html on how to construct a filter
+  Refer to https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html for more information on how to construct a filter.
 EOF
   type        = "string"
   default     = <<JSON
