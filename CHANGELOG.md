@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - tags to the lambda.
 
 ### Changed
-- converting the filter\_policy to a template.
+- converting the filter_policy to a template.
 - updating filter vars from string to list.
 - updating the variable `pg_jars_s3_key` to `pg_lambda_s3_key`.
 
