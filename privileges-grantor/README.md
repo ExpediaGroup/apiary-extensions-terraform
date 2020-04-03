@@ -11,7 +11,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 | instance\_name | Privileges Grantor instance name to identify resources in multi-instance deployments. | string | `""` | no |
 | lambda\_timeout | The time after which the lambda execution stops. | string | `"200"` | no |
 | memory | The amount of memory (in MiB) to be used by Lambda | string | `"512"` | no |
-| metastore\_events\_sns\_filter | SNS filter of message attributes to the added to the sns sns topic subscription. Supported format: SNS filter format. Refer to https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html for more information on how to construct a filter. | string | `{ "eventType": [ "CREATE_TABLE", "ALTER_TABLE" ] }` | no |
+| metastore\_events\_sns\_filter | SNS filter of message attributes to the added to the SNS topic subscription. Supported format: SNS filter format. Refer to https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html for more information on how to construct a filter. | string | `{ "eventType": [ "CREATE_TABLE", "ALTER_TABLE" ] }` | no |
 | metastore\_events\_sns\_topic | SNS Topic for Hive Metastore events. | string | n/a | yes |
 | pg\_lambda\_s3\_key | S3 key where privilege grantor lambda jar/zip file is located. | string | n/a | yes |
 | pg\_lambda\_bucket | Bucket where the privilege grantor lambda jar/zip can be found, for example 'bucket\_name'. Used together with `pg_lambda_s3_key` to construct the full S3 path. | string | n/a | yes |
